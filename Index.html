@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendar by Alif Al Imran</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #eef2ff, #dbeafe);
+    color: #172033;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    transition: 0.3s;
+}
+
+body.dark {
+    background: linear-gradient(135deg, #0f172a, #111827);
+    color: white;
+}
+
+.app {
+    width: 100%;
+    max-width: 950px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 25px;
+    padding: 25px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+}
+
+.dark .app {
+    background: #1e293b;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.title h1 {
+    font-size: 28px;
+}
+
+.title p {
+    color: #64748b;
+    margin-top: 5px;
+}
+
+.dark .title p {
+    color: #cbd5e1;
+}
+
+.buttons {
+    display: flex;
+    gap: 8px;
+}
+
+button {
+    border: none;
+    border-radius: 12px;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-weight: bold;
+    background: #2563eb;
+    color: white;
+    transition: 0.2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+.today-btn {
+    background: #16a34a;
+}
+
+.theme-btn {
+    background: #7c3aed;
+}
+
+.month-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.month-bar h2 {
+    font-size: 24px;
+}
+
+.arrow {
+    width: 45px;
+    height: 42px;
+    font-size: 22px;
+    padding: 0;
+}
+
+.weekdays,
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 7px;
+}
+
+.weekdays div {
+    text-align: center;
+    font-weight: bold;
+    color: #64748b;
+    padding: 10px 0;
+}
+
+.dark .weekdays div {
+    color: #cbd5e1;
+}
+
+.day {
+    min-height: 85px;
+    border-radius: 14px;
+    background: #f8fafc;
+    padding: 10px;
+    cursor: pointer;
+    position: relative;
+    transition: 0.2s;
+}
+
+.dark .day {
+    background: #334155;
+}
+
+.day:hover {
+    transform: scale(1.02);
+    background: #dbeafe;
+}
+
+.dark .day:hover {
+    background: #475569;
+}
+
+.empty {
+    background: transparent !important;
+    cursor: default;
+}
+
+.date-number {
+    font-weight: bold;
+}
+
+.today {
+    background: #2563eb !important;
+    color: white;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.25);
+}
+
+.event-dot {
+    margin-top: 12px;
+    background: #f59e0b;
+    color: #111827;
+    border-radius: 7px;
+    padding: 4px;
+    font-size: 11px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.info {
+    margin-top: 20px;
+    text-align: center;
+    color: #64748b;
+}
+
+.dark .info {
+    color: #cbd5e1;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-box {
+    width: 100%;
+    max-width: 430px;
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+}
+
+.dark .modal-box {
+    background: #1e293b;
+    color: white;
+}
+
+.modal-box h2 {
+    margin-bottom: 15px;
+}
+
+.modal-box input {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.dark .modal-box input {
+    background: #334155;
+    color: white;
+    border-color: #475569;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.cancel {
+    background: #64748b;
+}
+
+.delete {
+    background: #dc2626;
+}
+
+@media (max-width: 650px) {
+    body {
+        padding: 8px;
+        align-items: flex-start;
+    }
+
+    .app {
+        padding: 15px;
+        border-radius: 18px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .title h1 {
+        font-size: 23px;
+    }
+
+    .month-bar h2 {
+        font-size: 20px;
+    }
+
+    .day {
+        min-height: 60px;
+        padding: 7px;
+        font-size: 13px;
+    }
+
+    .event-dot {
+        font-size: 9px;
+        margin-top: 7px;
+    }
+
+    .weekdays {
+        font-size: 12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="header">
+        <div class="title">
+            <h1>📅 Calendar by Alif Al Imran</h1>
+            <p id="currentDate"></p>
+        </div>
+
+        <div class="buttons">
+            <button class="today-btn" onclick="goToday()">Today</button>
+            <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+        </div>
+    </div>
+
+    <div class="month-bar">
+        <button class="arrow" onclick="changeMonth(-1)">‹</button>
+        <h2 id="monthYear"></h2>
+        <button class="arrow" onclick="changeMonth(1)">›</button>
+    </div>
+
+    <div class="weekdays">
+        <div>Sun</div>
+        <div>Mon</div>
+        <div>Tue</div>
+        <div>Wed</div>
+        <div>Thu</div>
+        <div>Fri</div>
+        <div>Sat</div>
+    </div>
+
+    <div class="calendar" id="calendar"></div>
+
+    <div class="info">
+        Click any date to add an event or note.
+    </div>
+
+</div>
+
+<!-- Event Modal -->
+<div class="modal" id="modal">
+
+    <div class="modal-box">
+
+        <h2 id="modalTitle">Add Event</h2>
+
+        <input
+            type="text"
+            id="eventInput"
+            placeholder="Enter event or note..."
+        >
+
+        <div class="modal-buttons">
+            <button onclick="saveEvent()">Save</button>
+            <button class="delete" onclick="deleteEvent()">Delete</button>
+            <button class="cancel" onclick="closeModal()">Cancel</button>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+let currentDate = new Date();
+
+let selectedDate = null;
+
+let events = JSON.parse(localStorage.getItem("alifCalendarEvents")) || {};
+
+const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+];
+
+const dayNames = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday"
+];
+
+function formatKey(year, month, day) {
+    return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+function renderCalendar() {
+
+    const calendar = document.getElementById("calendar");
+
+    calendar.innerHTML = "";
+
+    const year = currentDate.getFullYear();
+
+    const month = currentDate.getMonth();
+
+    document.getElementById("monthYear").textContent =
+        `${monthNames[month]} ${year}`;
+
+    const firstDay = new Date(year, month, 1).getDay();
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (let i = 0; i < firstDay; i++) {
+
+        const empty = document.createElement("div");
+
+        empty.className = "day empty";
+
+        calendar.appendChild(empty);
+    }
+
+    const today = new Date();
+
+    for (let day = 1; day <= daysInMonth; day++) {
+
+        const cell = document.createElement("div");
+
+        cell.className = "day";
+
+        const number = document.createElement("div");
+
+        number.className = "date-number";
+
+        number.textContent = day;
+
+        cell.appendChild(number);
+
+        if (
+            day === today.getDate() &&
+            month === today.getMonth() &&
+            year === today.getFullYear()
+        ) {
+            cell.classList.add("today");
+        }
+
+        const key = formatKey(year, month, day);
+
+        if (events[key]) {
+
+            const event = document.createElement("div");
+
+            event.className = "event-dot";
+
+            event.textContent = events[key];
+
+            cell.appendChild(event);
+        }
+
+        cell.onclick = () => openModal(key, day);
+
+        calendar.appendChild(cell);
+    }
+
+    updateCurrentDate();
+}
+
+function updateCurrentDate() {
+
+    const now = new Date();
+
+    const text =
+        `${dayNames[now.getDay()]}, ` +
+        `${monthNames[now.getMonth()]} ` +
+        `${now.getDate()}, ` +
+        `${now.getFullYear()}`;
+
+    document.getElementById("currentDate").textContent = text;
+}
+
+function changeMonth(amount) {
+
+    currentDate.setMonth(currentDate.getMonth() + amount);
+
+    renderCalendar();
+}
+
+function goToday() {
+
+    currentDate = new Date();
+
+    renderCalendar();
+}
+
+function openModal(key, day) {
+
+    selectedDate = key;
+
+    const modal = document.getElementById("modal");
+
+    const input = document.getElementById("eventInput");
+
+    document.getElementById("modalTitle").textContent =
+        `Event for ${key}`;
+
+    input.value = events[key] || "";
+
+    modal.style.display = "flex";
+
+    input.focus();
+}
+
+function closeModal() {
+
+    document.getElementById("modal").style.display = "none";
+
+    selectedDate = null;
+}
+
+function saveEvent() {
+
+    const value =
+        document.getElementById("eventInput").value.trim();
+
+    if (!selectedDate) return;
+
+    if (value) {
+
+        events[selectedDate] = value;
+
+    } else {
+
+        delete events[selectedDate];
+    }
+
+    localStorage.setItem(
+        "alifCalendarEvents",
+        JSON.stringify(events)
+    );
+
+    closeModal();
+
+    renderCalendar();
+}
+
+function deleteEvent() {
+
+    if (!selectedDate) return;
+
+    delete events[selectedDate];
+
+    localStorage.setItem(
+        "alifCalendarEvents",
+        JSON.stringify(events)
+    );
+
+    closeModal();
+
+    renderCalendar();
+}
+
+function toggleTheme() {
+
+    document.body.classList.toggle("dark");
+
+    const isDark =
+        document.body.classList.contains("dark");
+
+    localStorage.setItem(
+        "alifCalendarDarkMode",
+        isDark ? "true" : "false"
+    );
+}
+
+function loadTheme() {
+
+    const dark =
+        localStorage.getItem("alifCalendarDarkMode");
+
+    if (dark === "true") {
+
+        document.body.classList.add("dark");
+    }
+}
+
+loadTheme();
+
+renderCalendar();
+
+</script>
+
+</body>
+</html>
